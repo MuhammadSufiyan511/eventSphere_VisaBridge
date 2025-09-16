@@ -1,0 +1,30 @@
+Test ID,Title,Type,Precondition,Steps,Expected,Severity
+T001,List events,API / Smoke,"Server up, DB seeded",GET /api/events,200 OK; JSON array; length ≥ 50; items have id/title/category/price/date,Critical
+T002,Get event by id,API,firstEventId set from T001,GET /api/events/:id,200 OK + event JSON if id exists; 404 if not,High
+T003,Create booking (valid),API / Functional,"Valid eventId, user info","POST /api/bookings { eventId, user{name,email}, quantity }","201 Created; contains bookingId, amount, status: pending or payment info",Critical
+T004,Create booking (invalid event),API,Non-existent eventId,POST /api/bookings with wrong eventId,400 or 404; clear error message; no booking created,High
+T005,Get booking status,API,bookingId from T003,GET /api/bookings/:id,200 OK; status field present (pending or paid),Medium
+T006,Create PaymentIntent (server),API,bookingId exists,POST /api/payments/create-payment-intent { bookingId },200/201; returns clientSecret or checkoutUrl and correct amount,Critical
+T007,Webhook endpoint receives event,API,Stripe sends test webhook or Stripe CLI forwarding,POST /api/payments/webhook with signed payload,2xx response; booking status updated to paid for relevant events,Critical
+T008,Payment failure handling,API,booking created,Simulate failed payment or use Stripe decline card,Payment fails; booking remains pending or failed; proper error handling,High
+T009,Idempotent booking/payment creation,API,repeat requests,Send duplicate requests with same idempotency key,No duplicate bookings/payments; handled gracefully,High
+T010,Booking list / pagination,API,many bookings exist,GET /api/bookings?page=1&limit=10,200 OK; returns page metadata and correct number of items,Medium
+T011,Full booking + successful payment (Checkout),E2E / Critical,"Frontend & backend running, Stripe keys in frontend",Browse events -> Book -> Pay via Stripe Checkout with 4242 card,User redirected to success page; booking status paid in DB,Critical
+T012,Full booking + successful payment (Elements),E2E,as above,Use inline PaymentForm with clientSecret; card 4242,Frontend shows success; booking updated to paid,Critical
+T013,Booking + declined card,E2E / High,as above,Use Stripe test decline card 4000...0002,Frontend shows error; booking pending; user can retry,High
+T014,Multiple ticket quantity,E2E,event capacity >= quantity,"Book 5 tickets, checkout",Total = price * quantity; booking created with correct quantity & amount,Medium
+T015,Booking after sold-out,E2E / High,set event capacity small and fill it,Attempt booking when capacity reached,Server returns 400/409; frontend shows sold-out,High
+T016,Webhook signature verification,Integration / Security,Use Stripe CLI to forward signed events,Forward real signed events to /api/payments/webhook,Backend verifies signature; returns 2xx; booking updated,Critical
+T017,Replay attack protection,Security,Send same webhook event twice,Send duplicate webhook events,Backend ignores duplicate events or handles idempotently,High
+T018,Refund flow,Integration,Payment exists,Trigger refund via API or Stripe dashboard,Booking status becomes refunded; refund recorded,Medium
+T019,Input validation (booking),API,N/A,Send booking with missing fields or invalid email,400 Bad Request with clear field errors,Medium
+T020,Concurrent bookings (race conditions),Integration / High,Two requests to book last available ticket simultaneously,Simulate concurrent booking requests,Only one booking succeeds; DB enforces capacity,Critical
+T021,Large payload,API,N/A,POST with very large body,413 or controlled error; server stable,Low
+T022,Injection / malformed input,Security,Send malicious payloads,Attempt NoSQL injection or harmful input,Server sanitizes inputs; no code executed,High
+T023,Secrets not committed,Security,Inspect repo,Search for Stripe keys or .env contents,No secret keys in git; .env in .gitignore,Critical
+T024,CORS enforcement,Security,Attempt cross-origin requests,Send requests from disallowed origin,Server rejects disallowed origins; only allowed origins pass,Medium
+T025,Rate limiting,Security,Send many rapid requests,Flood booking endpoint,Rate limit triggers (429) to prevent abuse,Medium
+T026,HTTPS in production,Security,Deployment check,Ensure production served via HTTPS,Production uses HTTPS; Stripe webhooks use HTTPS,Critical
+T027,Load test: events listing,Performance,Server running,100 concurrent users GET /api/events,Acceptable latency; no crashes,Medium
+T028,Spike test: booking submissions,Performance,Server running,Burst of booking requests to single event,Server retains correctness; capacity respected,High
+T029,Long-running stability,Reliability,Continuous tests,Run synthetic traffic for 24 hours,No memory leaks; stable,Low

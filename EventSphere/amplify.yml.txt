@@ -1,0 +1,18 @@
+version: 1
+applications:
+  - appRoot: Frontend   # 👈 frontend folder where package.json lives
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci   # clean install (better than npm install for CI)
+        build:
+          commands:
+            - npm run build
+    artifacts:
+      baseDirectory: dist   # 👈 Vite outputs here after build
+      files:
+        - '**/*'
+    cache:
+      paths:
+        - node_modules/**/*
