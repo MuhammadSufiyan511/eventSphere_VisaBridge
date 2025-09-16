@@ -1,16 +1,16 @@
 version: 1
 applications:
-  - appRoot: EventSphere/Frontend   # 👈 use the exact folder path to package.json
+  - appRoot: EventSphere/Frontend   # 👈 exact path to your package.json
     frontend:
       phases:
         preBuild:
           commands:
-            - npm install
+            - npm ci   # faster & safer than npm install on Amplify
         build:
           commands:
             - npm run build
     artifacts:
-      baseDirectory: dist   # 👈 Vite default build output
+      baseDirectory: dist   # 👈 Vite build output folder
       files:
         - '**/*'
     cache:
