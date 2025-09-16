@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserBookings from '../components/UserBookings';
-import { getBookings } from '../services/api';
+import { getBookings } from '../Services/Api';
 
 const Dashboard = () => {
   const [bookings, setBookings] = useState([]);

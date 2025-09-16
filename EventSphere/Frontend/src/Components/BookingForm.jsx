@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PaymentForm from './PaymentForm';
-import { createBooking } from '../services/api';
+import { createBooking } from '../Services/Api';
 
 const BookingForm = ({ event }) => {
   const [user, setUser] = useState({ name: '', email: '' });

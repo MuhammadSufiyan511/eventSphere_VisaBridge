@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { createPaymentIntent } from '../services/api';
+import { createPaymentIntent } from '../Services/Api';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 
