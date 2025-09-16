@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import EventList from '../Components/EventList';
-import { getEvents } from '../Services/api';
+import { getEvents } from '../services/api';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
