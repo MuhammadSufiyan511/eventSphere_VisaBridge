@@ -1,28 +1,18 @@
 version: 1
 applications:
-  - appRoot: EventSphere/Frontend   # 👈 exact, case-sensitive path to package.json
+  - appRoot: EventSphere/Frontend   # 👈 path to your package.json
     frontend:
       phases:
         preBuild:
           commands:
-            - echo "=== AMPLIFY PREBUILD DEBUG ==="
-            - echo "PWD: $(pwd)"
-            - echo "Repo root listing:"
-            - ls -la
-            - echo "EventSphere/Frontend listing:"
-            - ls -la EventSphere/Frontend || true
-            - node -v
-            - npm -v
-            - echo "Installing dependencies..."
-            - npm install            # use npm ci only if you commit package-lock.json
+            - npm install
         build:
           commands:
-            - echo "Building app..."
             - npm run build
-    artifacts:
-      baseDirectory: dist            # Vite default output
-      files:
-        - '**/*'
-    cache:
-      paths:
-        - node_modules/**/*
+      artifacts:
+        baseDirectory: dist          # Vite default output
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
