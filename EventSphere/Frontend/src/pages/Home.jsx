@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EventList from '../Components/EventList';
-import { getEvents } from '../services/api';
+import { getEvents } from '../Services/api';
 import { Calendar, Ticket, Star, Users, ArrowRight, Play, Award, Heart } from 'lucide-react';
 
 const Home = () => {
