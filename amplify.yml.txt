@@ -1,16 +1,16 @@
 version: 1
 applications:
-  - appRoot: Frontend   # 👈 frontend folder where package.json lives
+  - appRoot: EventSphere/Frontend   # 👈 use the exact folder path to package.json
     frontend:
       phases:
         preBuild:
           commands:
-            - npm ci   # clean install (better than npm install for CI)
+            - npm install
         build:
           commands:
             - npm run build
     artifacts:
-      baseDirectory: dist   # 👈 Vite outputs here after build
+      baseDirectory: dist   # 👈 Vite default build output
       files:
         - '**/*'
     cache:
