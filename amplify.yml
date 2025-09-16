@@ -1,16 +1,26 @@
 version: 1
 applications:
-  - appRoot: EventSphere/Frontend   # 👈 exact path to your package.json
+  - appRoot: EventSphere/Frontend   # 👈 exact, case-sensitive path to package.json
     frontend:
       phases:
         preBuild:
           commands:
-            - npm ci   # faster & safer than npm install on Amplify
+            - echo "=== AMPLIFY PREBUILD DEBUG ==="
+            - echo "PWD: $(pwd)"
+            - echo "Repo root listing:"
+            - ls -la
+            - echo "EventSphere/Frontend listing:"
+            - ls -la EventSphere/Frontend || true
+            - node -v
+            - npm -v
+            - echo "Installing dependencies..."
+            - npm install            # use npm ci only if you commit package-lock.json
         build:
           commands:
+            - echo "Building app..."
             - npm run build
     artifacts:
-      baseDirectory: dist   # 👈 Vite build output folder
+      baseDirectory: dist            # Vite default output
       files:
         - '**/*'
     cache:
